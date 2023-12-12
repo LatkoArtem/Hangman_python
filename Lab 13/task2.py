@@ -1,9 +1,9 @@
 def fib(n):
-    fib_list = [0, 1]
-    while len(fib_list) < n+1: 
+    fib_list = [1, 1]
+    while len(fib_list) < n: 
         fib_list.append(fib_list[-1] + fib_list[-2])
-    result = ', '.join(map(str, fib_list))
-    return result
+    for num in fib_list:
+        yield num
 
 while True:        
     try:
@@ -15,4 +15,5 @@ while True:
     except ValueError:
         print("Enter a positive integer")   
         
-print(fib(n))
+for index, number in enumerate(fib(n)):
+    print(number, end=', ' if index < n - 1 else '')
