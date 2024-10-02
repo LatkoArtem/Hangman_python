@@ -1,15 +1,29 @@
 import os
-folder_name_to_find = 'archive'
-folder_path = None
-for root, dirs, files in os.walk('/'): 
-    if folder_name_to_find in dirs:  
-        folder_path = os.path.join(root, folder_name_to_find)
-if folder_path:
+import time
+
+folder_name = 'archive'
+current_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(current_dir)
+folder_path = os.path.join(current_dir, folder_name)
+files = os.listdir(folder_path)
+
+def func_decorator_main(func):
+    def inner():
+        start_func = time.time()
+        func()
+        end_func = time.time()
+        func_time = end_func - start_func
+        print()
+        print(f"Execution time of the main body: {func_time}")
+    return inner
+
+@func_decorator_main
+def main_code():
     males_names = {} 
     females_names = {}
-    for file_name in os.listdir(folder_path):
+    for file_name in files:
         if file_name.endswith(".txt"):
-            with open(os.path.join(folder_path, file_name), 'r') as file:
+            with open(os.path.join(folder_path, file_name), 'r', encoding='utf-8') as file:
                 male_names = {}
                 female_names = {}
                 for line in file:
@@ -31,7 +45,7 @@ if folder_path:
                         males_names[most_popular_male_name] += 1
                     else:
                         males_names[most_popular_male_name] = 1
-            
+
                 most_popular_female_name = max(female_names, key=female_names.get)
                 if most_popular_female_name:
                     if most_popular_female_name in females_names:
@@ -39,13 +53,15 @@ if folder_path:
                     else:
                         females_names[most_popular_female_name] = 1
                     
-males_names = dict(sorted(males_names.items(), key=lambda item: item[1], reverse=True))
-females_names = dict(sorted(females_names.items(), key=lambda item: item[1], reverse=True))
+    males_names = dict(sorted(males_names.items(), key=lambda item: item[1], reverse=True))
+    females_names = dict(sorted(females_names.items(), key=lambda item: item[1], reverse=True))
 
-print("Males:")
-for name, count in males_names.items():
-    print(f"{name}: {count}")
+    print("Males:")
+    for name, count in males_names.items():
+        print(f"{name}: {count}")
 
-print("\nFemales:")
-for name, count in females_names.items():
-    print(f"{name}: {count}")
+    print("\nFemales:")
+    for name, count in females_names.items():
+        print(f"{name}: {count}")
+        
+main_code()
